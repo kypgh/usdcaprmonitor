@@ -7,7 +7,7 @@ from datetime import datetime
 # Configuration
 AAVESCAN_URL = "https://aavescan.com/ethereum-v3/usdc"
 STATE_FILE = "last_apr.json"
-THRESHOLD = 0.01  # Alert if change is greater than 0.01% (adjust as needed)
+THRESHOLD = 0.1  # Alert if change is greater than 0.01% (adjust as needed)
 
 # Notification settings - choose your method
 DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK_URL", "")
