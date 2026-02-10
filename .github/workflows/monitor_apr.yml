@@ -1,0 +1,41 @@
+name: Monitor USDC APR
+
+on:
+  # Run every 15 minutes
+  schedule:
+    - cron: '*/15 * * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  check-apr:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests beautifulsoup4
+        
+    - name: Run APR monitor
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+        python monitor_usdc_apr.py
+        
+    - name: Commit and push if state changed
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add last_apr.json || true
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update APR state [skip ci]" && git push)
