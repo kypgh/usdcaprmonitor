@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 # Configuration
-AAVESCAN_URL = "https://aavescan.com/ethereum-v3/usdc"
+AAVESCAN_URL = "https://aavescan.com/ethereum-v3/rlusd"
 STATE_FILE = "last_apr.json"
 THRESHOLD = 0.1  # Alert if change is greater than 0.01% (adjust as needed)
 
@@ -15,8 +15,8 @@ TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 EMAIL_ENABLED = os.getenv("EMAIL_ENABLED", "false").lower() == "true"
 
-def get_usdc_supply_apr():
-    """Scrape the USDC supply APR from Aavescan"""
+def get_rlusd_supply_apr():
+    """Scrape the RLUSD supply APR from Aavescan"""
     try:
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -103,7 +103,7 @@ def send_discord_notification(old_apr, new_apr, change):
         
         payload = {
             "embeds": [{
-                "title": f"{emoji} USDC Supply APR Changed on Aave",
+                "title": f"{emoji} RLUSD Supply APR Changed on Aave",
                 "description": f"The supply APR has changed from **{old_apr}%** to **{new_apr}%**",
                 "color": color,
                 "fields": [
@@ -121,7 +121,7 @@ def send_discord_notification(old_apr, new_apr, change):
                 "footer": {
                     "text": f"Checked at {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}"
                 },
-                "url": "https://aavescan.com/ethereum-v3/usdc"
+                "url": "https://aavescan.com/ethereum-v3/rlusd"
             }]
         }
         
@@ -138,13 +138,13 @@ def send_telegram_notification(old_apr, new_apr, change):
     
     try:
         emoji = "📈" if change > 0 else "📉"
-        message = f"""{emoji} *USDC Supply APR Changed*
+        message = f"""{emoji} *RLUSD Supply APR Changed*
 
 Old APR: `{old_apr}%`
 New APR: `{new_apr}%`
 Change: `{change:+.4f}%`
 
-[View on Aavescan](https://aavescan.com/ethereum-v3/usdc)
+[View on Aavescan](https://aavescan.com/ethereum-v3/rlusd)
 """
         
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -175,16 +175,16 @@ def send_notifications(old_apr, new_apr):
     send_telegram_notification(old_apr, new_apr, change)
 
 def main():
-    print(f"Starting USDC APR monitor - {datetime.now().isoformat()}")
+    print(f"Starting RLUSD APR monitor - {datetime.now().isoformat()}")
     
     # Get current APR
-    current_apr = get_usdc_supply_apr()
+    current_apr = get_rlusd_supply_apr()
     
     if current_apr is None:
         print("Failed to fetch current APR")
         return
     
-    print(f"Current USDC Supply APR: {current_apr}%")
+    print(f"Current RLUSD Supply APR: {current_apr}%")
     
     # Load last known APR
     last_apr, last_timestamp = load_last_state()
