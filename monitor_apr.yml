@@ -1,4 +1,4 @@
-name: Monitor USDC APR
+name: Monitor RLUSD APR
 
 on:
   # Run every 15 minutes
@@ -31,7 +31,7 @@ jobs:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: |
-        python monitor_usdc_apr.py
+        python monitor_rlusd_apr.py
         
     - name: Commit and push if state changed
       run: |
